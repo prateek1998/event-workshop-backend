@@ -7,7 +7,7 @@ router.get('/',function(req, res, next) {
 
 // uploading an Document
 router.route('/upload')
-      .post(eventcontroller.uploadImage);
+      .post(eventcontroller.uploadData);
 
 // Single event Routes
 router.route('/event')

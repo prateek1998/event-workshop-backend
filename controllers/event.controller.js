@@ -144,6 +144,8 @@ exports.deleteAllEvents = function (req, res){
         })
     })
 }
+
+
 // var upload = multer({ dest: "Upload_folder_name" }) 
 // If you do not want to use diskStorage then uncomment it 
 var storage = multer.diskStorage({ 
@@ -158,8 +160,7 @@ var storage = multer.diskStorage({
 	} 
 }) 
 	
-// Define the maximum size for uploading 
-// picture i.e. 1 MB. it is optional 
+// Define the maximum size for uploading the documents 1 Mb
 const maxSize = 1 * 1000 * 1000; 
 	
 var upload = multer({ 
@@ -181,11 +182,12 @@ var upload = multer({
 	// 			+ "following filetypes - " + filetypes); 
 	// } 
 
-// mypic is the name of file attribute 
+// upload is the name of file attribute 
 }).single("upload");	 
 
-exports.uploadImage = function (req, res) { 
-	upload(req,res,function(err,result) { 
+// method to upload documents
+exports.uploadData = function (req, res) { 
+	upload(req,res,function(err) { 
         var file =req.file
     	if(err) { 
     		res.send(err) 
