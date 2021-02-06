@@ -13,6 +13,7 @@ var Event = require('../models/Event.model'),
 // Method to Create Event
 exports.createEvent = function(req, res) {
     var data = req.body;
+    console.log(req.body)
     var errorResult = {
         error: true,
         message: "",
@@ -34,10 +35,9 @@ exports.createEvent = function(req, res) {
             if (!data.description) {
                 errorResult.message += " Event description is missing";                
             }
-            // if (!data.user) {
-            //     errorResult.message += " Event Speakers Details are missing";                
-            // }
-            
+            if (!data.user) {
+                errorResult.message += " Event Speakers Details are missing";                
+            }
             if(errorResult.message) done(errorResult);
             else done(null,data)
         },
@@ -55,7 +55,6 @@ exports.createEvent = function(req, res) {
                     });
                 }
             });
-
         }
 
     ], function(err) {
@@ -72,15 +71,16 @@ exports.getAllEvents = function (req, res){
         if(err){
             return res.status(400).send({
                 status:0,
-                message: 'No Event found'
+                message: "Something went wrong"
             })
         }
-        return res.json(events);
+        if (events.length) res.status(200).json(events);
+        res.json("No Event Hosted");
     })
 }
 
-// Method to Get a particlular Event to view
-exports.getEventbyID = function (req, res){
+// Method to Get a particlular Event By ID
+exports.getEvent = function (req, res){
     var eventID = req.query.id;
     Event.findOne({_id:eventID}).exec(function(err,events){
         if(err){
@@ -93,8 +93,23 @@ exports.getEventbyID = function (req, res){
     })
 }
 
+
+// Method to Update Event By ID
+exports.updateEvent = function (req, res){
+    var eventID = req.query.id;
+    Event.updateOne({_id:eventID}).exec(function(err,events){
+        if(err){
+            return res.status(400).send({
+                status:0,
+                message: 'No Event Hosted with this ID'
+            })
+        }
+        return res.json(events);
+    })
+}
+
 // Method to delete a particlular Event 
-exports.deleteEventbyID = function (req, res){
+exports.deleteEvent = function (req, res){
     var eventID = req.body.id;
     Event.findOneAndDelete({_id:eventID}).exec(function(err,event){
         if(err){
@@ -103,15 +118,32 @@ exports.deleteEventbyID = function (req, res){
                 message: 'No Event Hosted with this ID'
             })
         }
-        res.send({
-            status:1,
-            message:"Successfully Deleted",
-            "Event Detail":event
-        })
+        if(event==[]){
+            res.send({
+                status:1,
+                message:"Successfully Deleted",
+                "Event Detail":event
+            })  
+        }
+        res.json("No Event Hosted");
     })
 }
 
-
+// Method to Delete all Events
+exports.deleteAllEvents = function (req, res){
+    Event.remove({}).exec(function(err,events){
+        if(err){
+            return res.status(400).send({
+                status:0,
+                message: 'No Event found'
+            })
+        }
+        res.send({
+            status:1,
+            message:"All Events Successfully Deleted ",
+        })
+    })
+}
 // var upload = multer({ dest: "Upload_folder_name" }) 
 // If you do not want to use diskStorage then uncomment it 
 var storage = multer.diskStorage({ 

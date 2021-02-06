@@ -1,37 +1,25 @@
 var router = require('express').Router();
-const eventcontroller = require('../controllers/event.controller')
-// const {isArticleAuthor, isCommentAuthor, uploadArticleImage, resizeArticleImage} = require('../middlewares/article');
+const eventcontroller = require('../controllers/event.controller');
+
 router.get('/',function(req, res, next) {
     res.send('Hello World')
 })
 
-// Adding An Event
-router.route('/event')
-      .post(eventcontroller.createEvent);
-
-// Adding An Event
-router.route('/uploadimage')
+// uploading an Document
+router.route('/upload')
       .post(eventcontroller.uploadImage);
 
-//Get all Events
+// Single event Routes
+router.route('/event')
+      .post(eventcontroller.createEvent)
+      .get(eventcontroller.getEvent)       
+      .put(eventcontroller.updateEvent)     
+      .delete(eventcontroller.deleteEvent)       
+
+//Multiple Events Routes
 router.route('/events')
       .get(eventcontroller.getAllEvents)       
-
-//Get a particlular Event to view
-router.route('/event')
-      .get(eventcontroller.getEventbyID)       
-
-//Delete a particlular Event
-router.route('/event')
-      .delete(eventcontroller.deleteEventbyID)       
-
-// // update a particlular event 
-// router.route('/event/:id')
-//       .put(eventcontroller.updateEvent)       
-
-// // delete a particlular event 
-// router.route('/event/:id')
-//       .delete(eventcontroller.deleteEvent)       
+      .delete(eventcontroller.deleteAllEvents)       
 
 module.exports = router;
 
