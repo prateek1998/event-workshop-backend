@@ -224,7 +224,8 @@ Example response body:
 		"updated_at": "2021-02-08T11:48:21.563Z",
 		"__v": 0
 	}
-]```
+]
+```
 
 ### Update Event
 
