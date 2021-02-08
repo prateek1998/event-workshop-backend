@@ -6,14 +6,13 @@
 var Event = require('../models/Event.model'),
     mongoose = require('mongoose'),
     async = require('async'),
-    User = require('../models/User.model'),
-    path = require("path"),
+    path = require("path"),    
     multer = require("multer");
 
 // Method to Create Event
 exports.createEvent = function(req, res) {
     var data = req.body;
-    console.log(req.body)
+    // console.log(req.body)
     var errorResult = {
         error: true,
         message: "",
@@ -35,23 +34,36 @@ exports.createEvent = function(req, res) {
             if (!data.description) {
                 errorResult.message += " Event description is missing";                
             }
-            if (!data.user) {
-                errorResult.message += " Event Speakers Details are missing";                
+            for(let i= 0;i <data.user.length; i++){
+                if (!data.user[i]) {
+                    errorResult.message += " Event Speakers Details are missing";                
+                }
+                if (!data.user[i].info) {
+                    errorResult.message += " Event Speaker Info is missing";                
+                }                
             }
             if(errorResult.message) done(errorResult);
             else done(null,data)
         },
         function (data) {
             var event = new Event(data);
-            event.save(function(err) {
+            event.save(function(err,result) {
                 if (err) {
                     console.log("error----------",err);
                     return res.status(400).send({
                         "message": err
                     });
                 } else {
+                    var outputResult ={
+                        id:result._id,
+                        title:result.title,
+                        link:result.link,
+                        date:result.start_date,
+                    }
                     res.json({
-                        "message": "Event Added Successfully"
+                        success:1,
+                        "message": "Event Added Successfully",
+                        outputResult
                     });
                 }
             });
@@ -74,37 +86,87 @@ exports.getAllEvents = function (req, res){
                 message: "Something went wrong"
             })
         }
-        if (events.length) res.status(200).json(events);
-        res.json("No Event Hosted");
+        if(events.length){
+            return res.json(events);
+        }
+        return res.status(200).send({
+            status:1,
+            message: 'No Event Hosted '
+        })
     })
 }
 
 // Method to Get a particlular Event By ID
 exports.getEvent = function (req, res){
     var eventID = req.query.id;
-    Event.findOne({_id:eventID}).exec(function(err,events){
+    Event.findOne({_id:eventID}).exec(function(err,event){
         if(err){
             return res.status(400).send({
                 status:0,
-                message: 'No Event Hosted with this ID'
-            })
+                message: 'Something went wrong'
+            })  
         }
-        return res.json(events);
+        if(event){
+            return res.json(event);
+        }
+        return res.status(200).send({
+            status:1,
+            message: 'No Event Hosted with this ID'
+        })
     })
 }
 
-
 // Method to Update Event By ID
 exports.updateEvent = function (req, res){
-    var eventID = req.query.id;
-    Event.updateOne({_id:eventID}).exec(function(err,events){
+    var data = req.body;
+    Event.findOne({_id:data.id}).exec(function(err,event){
         if(err){
             return res.status(400).send({
                 status:0,
-                message: 'No Event Hosted with this ID'
+                message: 'Event Id is not correct'
             })
         }
-        return res.json(events);
+        if(event){
+            if (data.title){
+                event.title = data.title;
+            }
+            if (data.link){
+                event.link = data.link;
+            }
+            if (data.description){
+                event.description = data.description;
+            }
+            if (data.user){
+                event.user = data.user;
+            }
+            event.save(function(err,result) {
+                if (err) {
+                    console.log("error----------",err);
+                    return res.status(400).send({
+                        "message": err
+                    });
+                } else {
+                    var outputResult ={
+                        id:result._id,
+                        title:result.title,
+                        link:result.link,
+                        start_date:result.start_date,
+                    }
+                    res.json({
+                        success:1,
+                        "message": "Event Updated Successfully",
+                        outputResult
+                    });
+                }
+            });
+        }
+        else{
+return res.json({
+            status:0,
+            message: 'No Event Hosted with this Id '
+        })
+        }
+        
     })
 }
 
@@ -115,23 +177,25 @@ exports.deleteEvent = function (req, res){
         if(err){
             return res.status(400).send({
                 status:0,
-                message: 'No Event Hosted with this ID'
+                message: 'something went wrong'
             })
         }
-        if(event==[]){
-            res.send({
+        if(event){
+            res.json({
                 status:1,
                 message:"Successfully Deleted",
                 "Event Detail":event
-            })  
+            })            
         }
-        res.json("No Event Hosted");
+        else{
+            return res.status(200).send("No Event Hosted with this ID")
+        }        
     })
 }
 
 // Method to Delete all Events
 exports.deleteAllEvents = function (req, res){
-    Event.remove({}).exec(function(err,events){
+    Event.deleteMany({}).exec(function(err,events){
         if(err){
             return res.status(400).send({
                 status:0,
@@ -145,27 +209,31 @@ exports.deleteAllEvents = function (req, res){
     })
 }
 
-
 // var upload = multer({ dest: "Upload_folder_name" }) 
 // If you do not want to use diskStorage then uncomment it 
 var storage = multer.diskStorage({ 
 	destination: function (req, file, cb) { 
-		// Uploads is the Upload_folder_name 
+		// uploads is the Upload_folder_name 
 		cb(null, "uploads") 
 	}, 
 	filename: function (req, file, cb) { 
-        let extArray = file.mimetype.split("/");
+        let extArray = file.originalname.split(".");
         let extension = extArray[extArray.length - 1];
-        cb(null, file.fieldname + '-' + Date.now()+ '.' +extension)
+        if(extension=="x-zip-compressed")
+        cb(null, extArray[0] + '.zip')
+        
+        else
+        cb(null, extArray[0]+ '.' +extension)        
 	} 
 }) 
 	
-// Define the maximum size for uploading the documents 1 Mb
-const maxSize = 1 * 1000 * 1000; 
+// Define the maximum size for uploading the documents 10 Mb
+const maxSize = 10 * 1000 * 1000; 
 	
 var upload = multer({ 
 	storage: storage, 
 	limits: { fileSize: maxSize }, 
+    //If you want to filter the input data then uncommit the code 
 	// fileFilter: function (req, file, cb){ 
 	
 	// 	// Set the filetypes, it is optional 
@@ -182,112 +250,25 @@ var upload = multer({
 	// 			+ "following filetypes - " + filetypes); 
 	// } 
 
-// upload is the name of file attribute 
-}).single("upload");	 
+// upload any file
+}).any();	 
 
 // method to upload documents
-exports.uploadData = function (req, res) { 
+exports.uploadFile = function (req, res) { 
 	upload(req,res,function(err) { 
-        var file =req.file
-    	if(err) { 
+        if(err) { 
     		res.send(err) 
 		} 
 		else {
+            var outputFile={
+                name:req.files[0].originalname,
+                size:req.files[0].size,
+                url:req.files[0].path,
+            };
             res.status(200).send({
-                message: `Successfully, Data uploaded! path: ${file.path}` 
+                "success" : 1,
+                file:outputFile
             });            
 		} 
 	}) 
 }; 
-	
-
-exports.getArticles = async (req, res, next) => {
-    const sortBy = req.query.sortBy || 'createdAt';
-    const order = req.query.order === '0' ? '' : '-';
-    const articles = await Article.find().select('-text -comments').sort(`${order}${sortBy}`).populate('author', '_id name avatar');
-    res.status(200).json(articles);
-}
-
-exports.postArticle = async (req, res, next) => {
-    const article = await new Article({...req.body, author: req.user._id}).save();
-    await Article.populate(article, {
-        path: 'author',
-        select: '_id name avatar'
-    })
-    await User.findOneAndUpdate(
-        {_id: req.user._id},
-        {$addToSet: {articles: article._id}}
-    )
-    res.status(201).json(article);
-}
-
-exports.getArticle = async (req, res, next) => {
-    const {articleId} = req.params;
-    const article = await Article.findById(articleId)
-        .populate('author', '_id name avatar')
-        .populate('comments.author', '_id name avatar')
-        .populate('likes', '_id name avatar');
-    res.status(200).json(article)
-}
-
-exports.updateArticle = async (req, res, next) => {
-    const {articleId} = req.params;
-    const article = await Article.findOneAndUpdate(
-        {_id: articleId},
-        {$set: req.body},
-        {new: true, runValidators: true},
-    )
-        .populate('author', '_id name avatar')
-        .populate('comments.author', '_id name avatar')
-        .populate('likes', '_id name avatar');
-    res.status(200).json(article);
-}
-
-exports.deleteArticle = async (req, res, next) => {
-    const {articleId} = req.params;
-    const deletedArticle = await Article.findOneAndDelete({_id: articleId});
-    await User.findOneAndUpdate(
-        {_id: req.user._id},
-        {$pull: {articles: deletedArticle._id}}
-    )
-    res.status(200).json(deletedArticle);
-}
-
-exports.likesArticle = async (req, res, next) => {
-    const {articleId} = req.body;
-    const updatedArticle = await Article.findOneAndUpdate(
-        {_id: articleId},
-        {
-            $addToSet: {likes: req.user._id},
-            $inc: {likesLength: 1}
-        },
-        {new: true, runValidators: true},
-    )
-    await User.findOneAndUpdate(
-        {_id: req.user._id},
-        {$addToSet: {likes: articleId}}
-    )
-    res.status(200).json(updatedArticle);
-}
-
-exports.addComment = async (req, res, next) => {
-    const {articleId, text} = req.body;
-    const article = await Article.findOneAndUpdate(
-        {_id: articleId},
-        {$push: {comments: {author: req.user._id, text}}},
-        {new: true, runValidators: true},
-    )
-        .populate('comments.author', '_id name avatar')
-    res.status(200).json(article.comments);
-}
-
-exports.removeComment = async (req, res, next) => {
-    const {commentId} = req.params;
-    const {articleId} = req.body;
-    const article = await Article.findOneAndUpdate(
-        {_id: articleId},
-        {$pull: {comments: {_id: commentId}}},
-        {new: true, runValidators: true},
-    )
-    res.status(200).json(commentId);
-}

@@ -33,7 +33,7 @@ var EventSchema = new Schema({
         default: Date.now
     },
     description:{
-        type: String, 
+        type: Object, 
         required: true
     },
     resources:{
@@ -55,7 +55,7 @@ var EventSchema = new Schema({
         },
         avatar: {
             type: String, 
-            default: '/images/avatar.png'
+            default: '/uploads/avatar.png'
         },
         info: {
             type: String, 
@@ -81,4 +81,8 @@ var EventSchema = new Schema({
     },
 })
 
+EventSchema.pre('save', function(next) {
+    this.updated_at = new Date;
+    next();
+});
 module.exports = mongoose.model('Event', EventSchema);

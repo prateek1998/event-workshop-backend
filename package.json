@@ -1,25 +1,35 @@
 {
-  "name": "myversion",
+  "name": "event-workshop-backend",
   "version": "1.0.0",
-  "description": "Workshop Backend ",
+  "description": "Event Workshop Backend",
   "main": "app.js",
-  "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js"
-  },
-  "keywords": [
-    "NodeJs"
-  ],
-  "author": "Prateek Saini",
-  "license": "MIT",
   "dependencies": {
     "async": "^3.2.0",
     "body-parser": "^1.19.0",
     "chalk": "^4.1.0",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
-    "mongoose": "^5.11.15",
     "morgan": "^1.10.0",
+    "mongoose": "^5.11.15",
     "multer": "^1.4.2",
     "nodemon": "^2.0.7"
-  }
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prateek1998/event-workshop-backend.git"
+  },
+  "keywords": [
+    "Nodejs"
+  ],
+  "author": "Prateek Saini",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/prateek1998/event-workshop-backend/issues"
+  },
+  "homepage": "https://github.com/prateek1998/event-workshop-backend#readme"
 }

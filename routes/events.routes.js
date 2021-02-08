@@ -1,13 +1,10 @@
+var fs = require('fs');
 var router = require('express').Router();
 const eventcontroller = require('../controllers/event.controller');
 
-router.get('/',function(req, res, next) {
-    res.send('Hello World')
-})
-
 // uploading an Document
-router.route('/upload')
-      .post(eventcontroller.uploadData);
+router.route('/uploadFile')
+      .post(eventcontroller.uploadFile);
 
 // Single event Routes
 router.route('/event')

@@ -4,12 +4,14 @@ var express = require('express'),
     chalk = require('chalk'),
     mongoose = require('mongoose'),
     config = require('./config/index');
+    cors = require('cors'),
     eventRoutes = require('./routes/events.routes');
 
 // Normal express config middlewares
 app.use(require('morgan')('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors())
 
 // Custom api routes
 app.use('/api', eventRoutes);
