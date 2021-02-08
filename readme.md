@@ -28,6 +28,8 @@ Now your service is running on '[http://localhost:5000](http://localhost:5000/)'
 │	└── event.controller.js
 ├── models
 │	└── Event.model.js
+├── postman
+│	└── Event App.postman_collection.json
 ├── routes
 │	└── events.routes.js
 ├── uploads
@@ -364,4 +366,7 @@ Example response body:
 | size| file size in Kbs |
 | url | server destination path |
 
+
+## Test API 
+To test this Api, there is a folder named postman where you get the postman collection json file. You can simply import this Json file in your postman application and easily test the apis.
 

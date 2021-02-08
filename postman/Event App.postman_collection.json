@@ -1,0 +1,191 @@
+{
+	"info": {
+		"_postman_id": "cd0a854d-0694-485e-a970-d8891f66db30",
+		"name": "Event App",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Event",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"India Craft Week, 2021\",\r\n    \"link\": \"https://www.indiancrafts.com\",\r\n    \"description\":{\"time\":1612726658456,\"blocks\":[{\"type\":\"header\",\"data\":{\"text\":\"Editor.js\",\"level\":2}},{\"type\":\"attaches\",\"data\":{\"file\":{\"url\":\"https://www.tesla.com/tesla_theme/assets/img/_vehicle_redesign/roadster_and_semi/roadster/hero.jpg\",\"name\":\"hero.jpg\",\"extension\":\"jpg\",\"size\":91},\"title\":\"Hero\"}},{\"type\":\"image\",\"data\":{\"file\":{\"name\":\"avataar.png\",\"size\":5009,\"url\":\"uploads\\\\image.png\"},\"caption\":\"\",\"withBorder\":false,\"stretched\":false,\"withBackground\":false}},{\"type\":\"image\",\"data\":{\"file\":{\"name\":\"old-black-background-grunge-texture-dark-wallpaper-blackboard-chalkboard-room-wall.jpg\",\"size\":3848236,\"url\":\"uploads\\\\image.jpeg\"},\"caption\":\"\",\"withBorder\":false,\"stretched\":false,\"withBackground\":false}},{\"type\":\"attaches\",\"data\":{\"file\":{\"url\":\"uploads\\\\file.pdf\",\"name\":\"Information.pdf\",\"extension\":\"pdf\",\"size\":94597},\"title\":\"Information.pdf\"}}],\"version\":\"2.19.1\"},\r\n    \"start_date\": \"2021-02-05T18:50:37.457Z\",\r\n    \"end_date\": \"2021-02-05T19:00:01.609Z\",\r\n    \"user\": [{\r\n        \"username\": \"Prateek Saini\",\r\n        \"info\": \"Software Developer\",\r\n        \"avatar\":\"/uploads/avatar.png\"   \r\n    },{\r\n        \"username\": \"Prateek Saini\",\r\n        \"info\": \"Software Developer\",\r\n        \"roles\": \"moderator\"\r\n    }],\r\n    \"tags\": [\r\n        \"Nodejs\",\r\n        \"MongoDb\"\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/event",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"event"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Event by Id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/event?id=6021250578846f0664647dc1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"event"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "6021250578846f0664647dc1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Events",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/events",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Event",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"6021290178846f0664647dc4\",\r\n    \"title\": \"Country Event 2021\",\r\n    \"link\": \"https://www.greatIndia.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/event",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"event"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Particular Event",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\":\"60212cfcebbde24b14c3ea1e\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/event",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"event"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete All Event Details",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/events",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload Document",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "image",
+							"type": "file",
+							"src": "/C:/Users/DELL/Downloads/avataar.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/uploadfile",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"uploadfile"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
