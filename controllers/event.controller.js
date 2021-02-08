@@ -34,13 +34,18 @@ exports.createEvent = function(req, res) {
             if (!data.description) {
                 errorResult.message += " Event description is missing";                
             }
-            for(let i= 0;i <data.user.length; i++){
-                if (!data.user[i]) {
-                    errorResult.message += " Event Speakers Details are missing";                
+            if (!data.user) {
+                errorResult.message += "Event Speakers Details are missing"; 
+            }               
+            else{
+                for(let i= 0;i <data.user.length; i++){
+                    if (!data.user[i].username) {
+                        errorResult.message += " Event Speakers Name is missing";                
+                    }
+                    if (!data.user[i].info) {
+                        errorResult.message += " Event Speaker Info is missing";                
+                    }                
                 }
-                if (!data.user[i].info) {
-                    errorResult.message += " Event Speaker Info is missing";                
-                }                
             }
             if(errorResult.message) done(errorResult);
             else done(null,data)
